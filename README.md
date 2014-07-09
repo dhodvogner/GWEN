@@ -1,7 +1,7 @@
 GWEN - GUI Without Extravagant Nonsense
 ---------------------
 
-My goal is creating a OpenGL 3.x compatible render for GWEN.
+My goal is creating a OpenGL 3.x compatible renderer for GWEN.
 
 
 ---------------------------------------
