@@ -148,8 +148,8 @@ int main()
 	//
 	Gwen::Controls::Canvas* pCanvas = new Gwen::Controls::Canvas( pSkin );
 	pCanvas->SetSize( 998, 650 - 24 );
-	pCanvas->SetDrawBackground( false );
-	//pCanvas->SetBackgroundColor( Gwen::Color( 150, 170, 170, 255 ) );
+	pCanvas->SetDrawBackground( true );
+	pCanvas->SetBackgroundColor( Gwen::Color( 150, 170, 170, 255 ) );
 	//
 	// Create our unittest control (which is a Window with controls in it)
 	//
@@ -157,12 +157,11 @@ int main()
 	UnitTest* pUnit = new UnitTest( pCanvas );
 	pUnit->SetPos( 10, 10 );
 	
-	/*Gwen::Controls::WindowControl* pWindow = new Gwen::Controls::WindowControl(pCanvas);
-	pWindow->SetTitle(Gwen::Utility::Format(L"Window %i", 1));
+	Gwen::Controls::WindowControl* pWindow = new Gwen::Controls::WindowControl(pCanvas);
+	pWindow->SetTitle(Gwen::Utility::Format(L"Hellow GWEN!", 1));
 	pWindow->SetSize(400, 400);
 	pWindow->SetPos(10, 10);
-	pWindow->SetDeleteOnClose(true);*/
-
+	pWindow->SetDeleteOnClose(true);
 	//
 	// Create a Windows Control helper
 	// (Processes Windows MSG's and fires input at GWEN)

@@ -89,8 +89,10 @@ namespace Gwen
 			/*
 				glVertexPointer(3, GL_FLOAT, sizeof(Vertex), (void*)&m_Vertices[0].x);
 				glEnableClientState(GL_VERTEX_ARRAY);
+
 				glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(Vertex), (void*)&m_Vertices[0].r);
 				glEnableClientState(GL_COLOR_ARRAY);
+
 				glTexCoordPointer(2, GL_FLOAT, sizeof(Vertex), (void*)&m_Vertices[0].u);
 				glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 			*/
@@ -141,7 +143,7 @@ namespace Gwen
 				"out vec4  Color;\n"
 				"void main()\n"
 				"{\n"
-				"    vec4 tex = texture2D( Texture, texCoord ).rgba;"
+				"    vec4 tex = texture( Texture, texCoord ).rgba;"
 				"    Color = tex * vertexColor;\n"
 				"}\n";
 
@@ -201,7 +203,8 @@ namespace Gwen
 		{
 			glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 			//glAlphaFunc( GL_GREATER, 1.0f ); //depricated!
-			//glEnable( GL_BLEND );
+			glEnable( GL_BLEND );
+			glDisable(GL_DEPTH_TEST);
 
 			glViewport(0, 0, windowWidth, windowHeight);
 			glUseProgram(Program);
@@ -250,6 +253,7 @@ namespace Gwen
 
 			vertexBufferData.clear();
 			m_iVertNum = 0;
+			glFlush();
 
 			/*
 			glVertexPointer( 3, GL_FLOAT,  sizeof( Vertex ), ( void* ) &m_Vertices[0].x );
@@ -334,7 +338,8 @@ namespace Gwen
 			{
 				GLint view[4];
 				glGetIntegerv( GL_VIEWPORT, &view[0] );
-				rect.y = view[3] - ( rect.y + rect.h );
+				//float v3 = view[3] - (rect.y + rect.h);
+				//rect.y = view[3] - ( rect.y + rect.h );
 			}
 			glScissor( rect.x * Scale(), rect.y * Scale(), rect.w * Scale(), rect.h * Scale() );
 			glEnable( GL_SCISSOR_TEST );
