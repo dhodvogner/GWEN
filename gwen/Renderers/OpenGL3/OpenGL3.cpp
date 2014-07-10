@@ -204,7 +204,7 @@ namespace Gwen
 			glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 			//glAlphaFunc( GL_GREATER, 1.0f ); //depricated!
 			glEnable( GL_BLEND );
-			glDisable(GL_DEPTH_TEST);
+			//glDisable(GL_DEPTH_TEST);
 
 			glViewport(0, 0, windowWidth, windowHeight);
 			glUseProgram(Program);
@@ -277,7 +277,7 @@ namespace Gwen
 
 			//Position
 			vertexBufferData.push_back((float) x);
-			vertexBufferData.push_back((float) y);
+			vertexBufferData.push_back((float) windowHeight - y);
 			vertexBufferData.push_back(0.5f);
 
 			//Color
@@ -338,8 +338,7 @@ namespace Gwen
 			{
 				GLint view[4];
 				glGetIntegerv( GL_VIEWPORT, &view[0] );
-				//float v3 = view[3] - (rect.y + rect.h);
-				//rect.y = view[3] - ( rect.y + rect.h );
+				rect.y = view[3] - ( rect.y + rect.h );
 			}
 			glScissor( rect.x * Scale(), rect.y * Scale(), rect.w * Scale(), rect.h * Scale() );
 			glEnable( GL_SCISSOR_TEST );
