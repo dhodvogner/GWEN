@@ -26,9 +26,6 @@ namespace Gwen
 				m_Vertices[ i ].z = 0.5f;
 			}
 
-			//stbtt_bakedchar g_cdata[96]; // ASCII 32..126 is 95 glyphs
-			//GLuint g_ftex = 0;
-			//GLuint g_whitetex = 0;
 			VAO = 0;
 			VBO = 0;
 			Program = 0;
@@ -60,13 +57,6 @@ namespace Gwen
 		{
 			windowWidth = _windowWidth;
 			windowHeight =_windowHeight;
-
-			glClearColor(0.4f, 0.6f, 0.9f, 0.0f);
-
-			m_Color = Color(255, 0, 0, 255);
-			AddVert(20.0f, 20.0f);
-			AddVert(20.0f, 30.0f);
-			AddVert(30.0f, 20.0f);
 
 			//Generate VertexArrayObject
 			glGenVertexArrays(1, &VAO);
@@ -140,16 +130,15 @@ namespace Gwen
 				"in vec2 texCoord;\n"
 				"in vec4 vertexColor;\n"
 				"uniform sampler2D Texture;\n"
-				"out vec4  Color;\n"
+				"uniform int TextureEnabled;\n"
+				"out vec4 Color;\n"
 				"void main()\n"
 				"{\n"
-				"    vec4 tex = texture( Texture, texCoord ).rgba;"
-				"    Color = tex * vertexColor;\n"
+				"		Color = vertexColor * (TextureEnabled * texture2D( Texture, texCoord));\n"
 				"}\n";
 
-			//"    color = texture2D( myTextureSampler, UV ).rgba;"
-			//vec4(vertexColor.rgb, vertexColor.a * alpha); \n"
-			//"    float alpha = texture(Texture, texCoord).r;\n"
+			//"    vec4 tex = texture( Texture, texCoord.st ).rgba;"
+			//"    fragColor = vec4(tex.rgb,  tex.a * vertexColor.a);\n"
 
 			GLuint fso = glCreateShader(GL_FRAGMENT_SHADER);
 
@@ -195,16 +184,16 @@ namespace Gwen
 			ProgramViewportLocation   = glGetUniformLocation(Program, "Viewport");
 			ProgramProjectionLocation = glGetUniformLocation(Program, "Projection");
 			ProgramTextureLocation    = glGetUniformLocation(Program, "Texture");
+			ProgramTextureEnabledLocation = glGetUniformLocation(Program, "TextureEnabled");
 			glUseProgram(0);
 
 		}
 
 		void OpenGL3::Begin()
 		{
-			glBlendFunc( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
-			//glAlphaFunc( GL_GREATER, 1.0f ); //depricated!
-			glEnable( GL_BLEND );
-			//glDisable(GL_DEPTH_TEST);
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			glDisable(GL_ALPHA_TEST);
 
 			glViewport(0, 0, windowWidth, windowHeight);
 			glUseProgram(Program);
@@ -312,6 +301,7 @@ namespace Gwen
 			{
 				Flush();
 				glDisable( GL_TEXTURE_2D );
+				glUniform1i(ProgramTextureEnabledLocation, 1);
 			}
 
 			Translate( rect );
@@ -371,6 +361,7 @@ namespace Gwen
 				Flush();
 				glBindTexture( GL_TEXTURE_2D, *tex );
 				glEnable( GL_TEXTURE_2D );
+				glUniform1i(ProgramTextureEnabledLocation, 1);
 			}
 
 			AddVert( rect.x, rect.y,			u1, v1 );

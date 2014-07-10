@@ -59,6 +59,7 @@ namespace Gwen
 				GLuint ProgramViewportLocation;
 				GLuint ProgramProjectionLocation;
 				GLuint ProgramTextureLocation;
+				GLuint ProgramTextureEnabledLocation;
 
 				int windowWidth;
 				int windowHeight;

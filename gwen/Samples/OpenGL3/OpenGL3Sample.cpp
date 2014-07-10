@@ -21,6 +21,7 @@
 
 HWND CreateGameWindow( void )
 {
+	LPCTSTR lpWindowName;
 	WNDCLASSW	wc;
 	ZeroMemory( &wc, sizeof( wc ) );
 	wc.style			= CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
@@ -30,11 +31,11 @@ HWND CreateGameWindow( void )
 	wc.hCursor			= LoadCursor( NULL, IDC_ARROW );
 	RegisterClassW( &wc );
 #ifdef USE_DEBUG_FONT
-	//L"GWEN - OpenGL3 Sample (Using embedded debug font renderer)"
+	lpWindowName = L"GWEN - OpenGL3 Sample (Using embedded debug font renderer)";
 #else
-	//L"GWEN - OpenGL3 Sample (No cross platform way to render fonts in OpenGL)"
+	lpWindowName = L"GWEN - OpenGL3 Sample (No cross platform way to render fonts in OpenGL)";
 #endif
-	HWND hWindow = CreateWindowExW( ( WS_EX_APPWINDOW | WS_EX_WINDOWEDGE ) , wc.lpszClassName, L"GWEN - OpenGL3 Sample (No cross platform way to render fonts in OpenGL)", ( WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN ) & ~( WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_THICKFRAME ), -1, -1, 1004, 650, NULL, NULL, GetModuleHandle( NULL ), NULL );
+	HWND hWindow = CreateWindowExW( ( WS_EX_APPWINDOW | WS_EX_WINDOWEDGE ) , wc.lpszClassName, lpWindowName, ( WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN ) & ~( WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_THICKFRAME ), -1, -1, 1004, 650, NULL, NULL, GetModuleHandle( NULL ), NULL );
 	ShowWindow( hWindow, SW_SHOW );
 	SetForegroundWindow( hWindow );
 	SetFocus( hWindow );
@@ -160,7 +161,7 @@ int main()
 	// Create a Canvas (it's root, on which all other GWEN panels are created)
 	//
 	Gwen::Controls::Canvas* pCanvas = new Gwen::Controls::Canvas( pSkin );
-	pCanvas->SetSize( 998, 650 - 24 );
+	pCanvas->SetSize(windowWidth, windowHeight);
 	pCanvas->SetDrawBackground( true );
 	pCanvas->SetBackgroundColor( Gwen::Color( 150, 170, 170, 255 ) );
 	//
@@ -209,10 +210,9 @@ int main()
 
 		// Main OpenGL Render Loop
 		{  
+			glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
 			glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
-
 			pCanvas->RenderCanvas();
-
 			SwapBuffers( GetDC( g_pHWND ) );
 		}
 	}

@@ -64,6 +64,10 @@ DefineRenderer( "OpenGL_DebugFont",
 DefineRenderer( "OpenGL3",
                 {"../Renderers/OpenGL3/OpenGL3.cpp"} )
 				
+DefineRenderer( "OpenGL3_DebugFont",
+                { "../Renderers/OpenGL3/OpenGL3.cpp",
+                  "../Renderers/OpenGL3/DebugFont/OpenGL3_DebugFont.cpp" } )
+				
 DefineRenderer( "SFML",
                 { "../Renderers/SFML/SFML.cpp" },
                 SFML_DEFINES )
@@ -145,7 +149,12 @@ if ( os.get() == "windows" ) then
 	DefineSample( "OpenGL3",
 			  { "../Samples/OpenGL3/OpenGL3Sample.cpp" },
 			  { "UnitTest", "Renderer-OpenGL3", "GWEN-Static", "FreeImage", "glew32", "opengl32" } )
-
+			  
+	DefineSample( "OpenGL3_DebugFont",
+                  { "../Samples/OpenGL3/OpenGL3Sample.cpp" },
+                  { "UnitTest", "Renderer-OpenGL3_DebugFont", "GWEN-Static", "FreeImage", "glew32", "opengl32" },
+                  nil,
+                  { "USE_DEBUG_FONT" } )
 end
 
 project "ControlFactory"
