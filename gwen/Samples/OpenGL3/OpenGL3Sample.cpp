@@ -8,7 +8,11 @@
 #include "Gwen/UnitTest/UnitTest.h"
 #include "Gwen/Input/Windows.h"
 
+#ifdef USE_DEBUG_FONT
+#include "Gwen/Renderers/OpenGL3_DebugFont.h"
+#else
 #include "Gwen/Renderers/OpenGL3.h"
+#endif
 
 #include "gl/glew.h"
 #include "gl/wglew.h"
@@ -25,6 +29,11 @@ HWND CreateGameWindow( void )
 	wc.lpszClassName	= L"GWENWindow";
 	wc.hCursor			= LoadCursor( NULL, IDC_ARROW );
 	RegisterClassW( &wc );
+#ifdef USE_DEBUG_FONT
+	//L"GWEN - OpenGL3 Sample (Using embedded debug font renderer)"
+#else
+	//L"GWEN - OpenGL3 Sample (No cross platform way to render fonts in OpenGL)"
+#endif
 	HWND hWindow = CreateWindowExW( ( WS_EX_APPWINDOW | WS_EX_WINDOWEDGE ) , wc.lpszClassName, L"GWEN - OpenGL3 Sample (No cross platform way to render fonts in OpenGL)", ( WS_OVERLAPPEDWINDOW | WS_CLIPSIBLINGS | WS_CLIPCHILDREN ) & ~( WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_THICKFRAME ), -1, -1, 1004, 650, NULL, NULL, GetModuleHandle( NULL ), NULL );
 	ShowWindow( hWindow, SW_SHOW );
 	SetForegroundWindow( hWindow );
@@ -136,7 +145,11 @@ int main()
 	//
 	// Create a GWEN OpenGL Renderer
 	//
+#ifdef USE_DEBUG_FONT
+	Gwen::Renderer::OpenGL3* pRenderer = new Gwen::Renderer::OpenGL3_DebugFont();
+#else
 	Gwen::Renderer::OpenGL3* pRenderer = new Gwen::Renderer::OpenGL3();
+#endif
 	pRenderer->Init(windowWidth, windowHeight);
 	//
 	// Create a GWEN skin
