@@ -29,7 +29,7 @@ namespace Gwen
 			VAO = 0;
 			VBO = 0;
 			Program = 0;
-			ProgramProjectionLocation = 0;
+			//ProgramProjectionLocation = 0;
 			ProgramTextureLocation    = 0;
 
 		}
@@ -102,7 +102,7 @@ namespace Gwen
 				"layout(location = 2) in vec2 VertexTexCoord;\n"
 				"out vec2 texCoord;\n"
 				"out vec4 vertexColor;\n"
-				"uniform mat4 Projection;\n"
+				//"uniform mat4 Projection;\n"
 				"uniform vec2 Viewport;\n"
 				"void main()\n"
 				"{\n"
@@ -130,13 +130,16 @@ namespace Gwen
 				"in vec2 texCoord;\n"
 				"in vec4 vertexColor;\n"
 				"uniform sampler2D Texture;\n"
-				"uniform int TextureEnabled;\n"
-				"out vec4 Color;\n"
+				"uniform float TextureEnabled;\n"
+				"out vec4 fragColor;\n"
 				"void main()\n"
 				"{\n"
-				"		Color = vertexColor * (TextureEnabled * texture2D( Texture, texCoord));\n"
+				"       vec4 tex = texture2D(Texture, texCoord.xy);\n"
+				"		fragColor   = (vertexColor * tex).rgba;\n"
+				//"		fragColor.a = tex.a;\n"
 				"}\n";
 
+			//"		Color = vertexColor * (TextureEnabled * texture2D( Texture, texCoord));\n"
 			//"    vec4 tex = texture( Texture, texCoord.st ).rgba;"
 			//"    fragColor = vec4(tex.rgb,  tex.a * vertexColor.a);\n"
 
@@ -182,7 +185,7 @@ namespace Gwen
 
 			glUseProgram(Program);
 			ProgramViewportLocation   = glGetUniformLocation(Program, "Viewport");
-			ProgramProjectionLocation = glGetUniformLocation(Program, "Projection");
+			//ProgramProjectionLocation = glGetUniformLocation(Program, "Projection");
 			ProgramTextureLocation    = glGetUniformLocation(Program, "Texture");
 			ProgramTextureEnabledLocation = glGetUniformLocation(Program, "TextureEnabled");
 			glUseProgram(0);
@@ -195,11 +198,11 @@ namespace Gwen
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 			glDisable(GL_ALPHA_TEST);
 
-			glViewport(0, 0, windowWidth, windowHeight);
+			//glViewport(0, 0, windowWidth, windowHeight);
 			glUseProgram(Program);
 
 			glUniform2f(ProgramViewportLocation, (float)windowWidth, (float)windowHeight);
-			applyOrtho(0, 0, windowWidth, windowHeight, -1.0, 1.0);
+			//applyOrtho(0, 0, windowWidth, windowHeight, -1.0, 1.0);
 
 			glActiveTexture(GL_TEXTURE0);
 			glUniform1i(ProgramTextureLocation, 0);
@@ -242,7 +245,7 @@ namespace Gwen
 
 			vertexBufferData.clear();
 			m_iVertNum = 0;
-			glFlush();
+			//glFlush();
 
 			/*
 			glVertexPointer( 3, GL_FLOAT,  sizeof( Vertex ), ( void* ) &m_Vertices[0].x );
@@ -300,8 +303,9 @@ namespace Gwen
 			if ( texturesOn )
 			{
 				Flush();
+				glBindTexture(GL_TEXTURE_2D, 0);
 				glDisable( GL_TEXTURE_2D );
-				glUniform1i(ProgramTextureEnabledLocation, 1);
+				glUniform1f(ProgramTextureEnabledLocation, 0.0f);
 			}
 
 			Translate( rect );
@@ -311,6 +315,7 @@ namespace Gwen
 			AddVert( rect.x + rect.w, rect.y );
 			AddVert( rect.x + rect.w, rect.y + rect.h );
 			AddVert( rect.x, rect.y + rect.h );
+			//Flush();
 		}
 
 		void OpenGL3::SetDrawColor( Gwen::Color color )
@@ -361,15 +366,17 @@ namespace Gwen
 				Flush();
 				glBindTexture( GL_TEXTURE_2D, *tex );
 				glEnable( GL_TEXTURE_2D );
-				glUniform1i(ProgramTextureEnabledLocation, 1);
+				glUniform1f(ProgramTextureEnabledLocation, 1.0f);
 			}
 
+			//SetDrawColor(Gwen::Color(255, 255, 255, 0));
 			AddVert( rect.x, rect.y,			u1, v1 );
 			AddVert( rect.x + rect.w, rect.y,		u2, v1 );
 			AddVert( rect.x, rect.y + rect.h,	u1, v2 );
 			AddVert( rect.x + rect.w, rect.y,		u2, v1 );
 			AddVert( rect.x + rect.w, rect.y + rect.h, u2, v2 );
 			AddVert( rect.x, rect.y + rect.h, u1, v2 );
+			//Flush();
 		}
 
 		void OpenGL3::LoadTexture( Gwen::Texture* pTexture )
@@ -465,28 +472,28 @@ namespace Gwen
 			return c;
 		}
 
-		void OpenGL3::applyOrtho(float left, float right, float bottom, float top, float _near, float _far) 
-		{
+		//void OpenGL3::applyOrtho(float left, float right, float bottom, float top, float _near, float _far) 
+		//{
 
-			float a = 2.0f / (right - left);
-			float b = 2.0f / (top - bottom);
-			float c = -2.0f / (_far - _near);
+		//	float a = 2.0f / (right - left);
+		//	float b = 2.0f / (top - bottom);
+		//	float c = -2.0f / (_far - _near);
 
-			float tx = -(right + left) / (right - left);
-			float ty = -(top + bottom) / (top - bottom);
-			float tz = -(_far + _near) / (_far - _near);
+		//	float tx = -(right + left) / (right - left);
+		//	float ty = -(top + bottom) / (top - bottom);
+		//	float tz = -(_far + _near) / (_far - _near);
 
-			float ortho[16] = {
-				a, 0, 0, 0,
-				0, b, 0, 0,
-				0, 0, c, 0,
-				tx, ty, tz, 1
-			};
+		//	float ortho[16] = {
+		//		a, 0, 0, 0,
+		//		0, b, 0, 0,
+		//		0, 0, c, 0,
+		//		tx, ty, tz, 1
+		//	};
 
-			if (ProgramProjectionLocation)
-				glUniformMatrix4fv(ProgramProjectionLocation, 1, GL_TRUE, &ortho[0]);
+		//	if (ProgramProjectionLocation)
+		//		glUniformMatrix4fv(ProgramProjectionLocation, 1, GL_TRUE, &ortho[0]);
 
-		}
+		//}
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////
 

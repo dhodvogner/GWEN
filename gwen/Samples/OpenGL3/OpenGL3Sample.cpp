@@ -161,21 +161,14 @@ int main()
 	// Create a Canvas (it's root, on which all other GWEN panels are created)
 	//
 	Gwen::Controls::Canvas* pCanvas = new Gwen::Controls::Canvas( pSkin );
-	pCanvas->SetSize(windowWidth, windowHeight);
+	pCanvas->SetSize(998, 650 - 24);
 	pCanvas->SetDrawBackground( true );
 	pCanvas->SetBackgroundColor( Gwen::Color( 150, 170, 170, 255 ) );
 	//
 	// Create our unittest control (which is a Window with controls in it)
 	//
-
 	UnitTest* pUnit = new UnitTest( pCanvas );
 	pUnit->SetPos( 10, 10 );
-	
-	Gwen::Controls::WindowControl* pWindow = new Gwen::Controls::WindowControl(pCanvas);
-	pWindow->SetTitle(Gwen::Utility::Format(L"Hellow GWEN!", 1));
-	pWindow->SetSize(400, 400);
-	pWindow->SetPos(10, 10);
-	pWindow->SetDeleteOnClose(true);
 	//
 	// Create a Windows Control helper
 	// (Processes Windows MSG's and fires input at GWEN)
@@ -185,6 +178,13 @@ int main()
 	//
 	// Begin the main game loop
 	//
+
+	//Gwen::Controls::WindowControl* pWindow = new Gwen::Controls::WindowControl(pCanvas);
+	//pWindow->SetTitle(Gwen::Utility::Format(L"Hellow GWEN!", 1));
+	//pWindow->SetSize(400, 400);
+	//pWindow->SetPos(10, 10);
+	//pWindow->SetDeleteOnClose(true);
+
 	MSG msg;
 
 	while ( true )
@@ -209,8 +209,7 @@ int main()
 		}
 
 		// Main OpenGL Render Loop
-		{  
-			glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
+		{
 			glClear( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT );
 			pCanvas->RenderCanvas();
 			SwapBuffers( GetDC( g_pHWND ) );

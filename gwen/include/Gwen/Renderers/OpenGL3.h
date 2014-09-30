@@ -57,13 +57,13 @@ namespace Gwen
 				GLuint VBO;
 				GLuint Program;
 				GLuint ProgramViewportLocation;
-				GLuint ProgramProjectionLocation;
+				//GLuint ProgramProjectionLocation;
 				GLuint ProgramTextureLocation;
 				GLuint ProgramTextureEnabledLocation;
 
 				int windowWidth;
 				int windowHeight;
-				void applyOrtho(float left, float right, float bottom, float top, float near, float far);
+				//void applyOrtho(float left, float right, float bottom, float top, float near, float far);
 
 				void Flush();
 				void AddVert( int x, int y, float u = 0.0f , float v = 0.0f );
