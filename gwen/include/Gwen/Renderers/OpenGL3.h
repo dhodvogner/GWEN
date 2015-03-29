@@ -57,13 +57,11 @@ namespace Gwen
 				GLuint VBO;
 				GLuint Program;
 				GLuint ProgramViewportLocation;
-				//GLuint ProgramProjectionLocation;
 				GLuint ProgramTextureLocation;
 				GLuint ProgramTextureEnabledLocation;
 
 				int windowWidth;
 				int windowHeight;
-				//void applyOrtho(float left, float right, float bottom, float top, float near, float far);
 
 				void Flush();
 				void AddVert( int x, int y, float u = 0.0f , float v = 0.0f );
@@ -72,6 +70,8 @@ namespace Gwen
 				int					m_iVertNum;
 				Vertex				m_Vertices[ MaxVerts ];
 
+				bool   m_textureEnabled;
+				GLuint m_currentTexture;
 
 			public:
 
