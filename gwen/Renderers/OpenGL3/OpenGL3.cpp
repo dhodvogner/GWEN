@@ -133,7 +133,7 @@ namespace Gwen
 				"void main()\n"
 				"{\n"
 				"       vec4 tex = texture2D(Texture, texCoord.xy);\n"
-				"		fragColor   = mix(vertexColor, tex, TextureEnabled);\n"
+				"		fragColor   = mix(vertexColor, tex, TextureEnabled) * vertexColor;\n"
 				"}\n";
 
 			GLuint fso = glCreateShader(GL_FRAGMENT_SHADER);
@@ -442,23 +442,31 @@ namespace Gwen
 			pfd.nVersion = 1;
 			pfd.dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
 			pfd.iPixelType = PFD_TYPE_RGBA;
+			pfd.iLayerType = PFD_MAIN_PLANE;
 			pfd.cColorBits = 24;
 			pfd.cDepthBits = 32;
-			pfd.iLayerType = PFD_MAIN_PLANE;
-			int iFormat = ChoosePixelFormat( hDC, &pfd );
-			SetPixelFormat( hDC, iFormat, &pfd );
-			HGLRC hRC;
-			hRC = wglCreateContext( hDC );
-			wglMakeCurrent( hDC, hRC );
-			RECT r;
-
-			if ( GetClientRect( pHwnd, &r ) )
+			
+			int pixelFormat = ChoosePixelFormat( hDC, &pfd );
+			if ( pixelFormat == 0 )
 			{
-				glMatrixMode( GL_PROJECTION );
-				glLoadIdentity();
-				glOrtho( r.left, r.right, r.bottom, r.top, -1.0, 1.0 );
-				glMatrixMode( GL_MODELVIEW );
-				glViewport( 0, 0, r.right - r.left, r.bottom - r.top );
+				throw std::runtime_error("ChoosePixelFormat() failed!");
+				return false;
+			}
+
+			bool bResult = SetPixelFormat(hDC, pixelFormat, &pfd);
+			if (!bResult)
+			{
+				throw std::runtime_error("SetPixelFormat() failed!");
+				return false;
+			}
+			
+			HGLRC hRC = wglCreateContext(hDC);
+			wglMakeCurrent(hDC, hRC);
+			
+			RECT r;
+			if (GetClientRect(pHwnd, &r))
+			{
+				glViewport(0, 0, r.right - r.left, r.bottom - r.top);
 			}
 
 			m_pContext = ( void* ) hRC;
@@ -470,6 +478,7 @@ namespace Gwen
 		bool OpenGL3::ShutdownContext( Gwen::WindowProvider* pWindow )
 		{
 #ifdef _WIN32
+			wglMakeCurrent( NULL, NULL );
 			wglDeleteContext( ( HGLRC ) m_pContext );
 			return true;
 #endif
@@ -494,14 +503,9 @@ namespace Gwen
 		{
 #ifdef _WIN32
 			RECT r;
-
 			if ( GetClientRect( ( HWND ) pWindow->GetWindow(), &r ) )
 			{
-				glMatrixMode( GL_PROJECTION );
-				glLoadIdentity();
-				glOrtho( r.left, r.right, r.bottom, r.top, -1.0, 1.0 );
-				glMatrixMode( GL_MODELVIEW );
-				glViewport( 0, 0, r.right - r.left, r.bottom - r.top );
+				glViewport(0, 0, r.right - r.left, r.bottom - r.top);
 			}
 
 			return true;
