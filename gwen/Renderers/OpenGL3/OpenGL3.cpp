@@ -5,6 +5,7 @@
 #include "Gwen/Texture.h"
 #include "Gwen/WindowProvider.h"
 
+#include <stdexcept>
 #include <math.h>
 
 #include "GL/glew.h"
